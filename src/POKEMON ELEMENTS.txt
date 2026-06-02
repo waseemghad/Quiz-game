@@ -1,0 +1,18 @@
+Are fire types strong against ice types? (YES/NO)
+Are poison types weak against electric types?
+Are fairy types strong against ghost types?
+Which type is strong against normal? (Only one answer)
+Which Pokemon type are ground moves ineffective against?
+Which moves are ineffective against steel types?
+Which two types are super effective against themselves? (Answer in alphabetical order, in the format: ANSWER_A AND ANSWER_B)
+Which type has the most number of types that are ineffective against it? (difficult)
+Which type is strong against psychic and grass?
+YES
+NO
+NO
+FIGHTING
+FLYING
+POISON
+DRAGON AND GHOST
+STEEL
+BUG

@@ -1,5 +1,11 @@
 # ChangeLog
 
+## [v3.0] - 2025-11-30  
+### Added
+- File I/O support for multiple question sets
+- User can create custom quizzes
+- Different quiz options can be loaded
+
 ## [v2.0] - 2025-11-01
 ### Added
 - QuestionData class (record)
