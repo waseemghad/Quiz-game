@@ -1,5 +1,13 @@
 # ChangeLog
 
+## v3.1 - 2025-12-08
+### Added
+- ADT for abstraction
+
+### Changed
+- utilises singular QuestionData, rather than array of QuestionDatas
+- Improvements with error handling and file reading
+
 ## [v3.0] - 2025-11-30  
 ### Added
 - File I/O support for multiple question sets

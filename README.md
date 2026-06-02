@@ -6,6 +6,7 @@ Game project demonstrating my progressive learning of scripting in Java.
 - **v1.0** (Sep 2025): Basic quiz game with simple functionality
 - **v2.0** (Nov 2025): Properly-functioning, added more complex data structures (while loops, arrays, records)
 - **v3.0** (Nov 2025): Added file I/O and option to create and select games
+- **v3.1** (Dec 2025): Use of ADT, final fixes and refining
 
 ## How to Run
 

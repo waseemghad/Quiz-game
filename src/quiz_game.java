@@ -1,14 +1,10 @@
 /**********************************************************************
 
  author:  WASEEM HEMAT GHADARI
-   date:  30/11/2025
-version:  3.0
+   date:  07/11/2025
+version:  3.1
 
 An intimidating game quiz that doubles or halves the user's prize money
-
-Changes:
-- added file io
-- system to create and choose games
 
 ***********************************************************************/
 
@@ -32,58 +28,103 @@ class quiz_game
         return;
     }
 
-    // Creates a QuestionData and recieves the selected question set
-    // Stores questions and answers into the QuestionData
-    public static QuestionData[] createQuestionData (String[] questionAnswerSet) throws IOException
+    // Creates a QuestionData
+    // Stores corresponding question and answer into the QuesionData
+    public static QuestionData createQuestionData (String[] set, int count, int num_questions)
         {
-        final int NUM_OF_QUESTIONS = questionAnswerSet.length / 2;   // file contains question and answer
-        QuestionData questionArray[] = new QuestionData[NUM_OF_QUESTIONS];
+        QuestionData qd = new QuestionData();
 
-    
-        for (int i=0;i<NUM_OF_QUESTIONS;i++)
-            {
-                questionArray[i] = new QuestionData();
-            }
+        qd.question  = set[count];
+        qd.answer = set[count + num_questions];
 
-        for (int i=0;i<NUM_OF_QUESTIONS;i++)
-            {
-                questionArray[i].question = questionAnswerSet[i];
-            }
-
-        for (int i=0;i<NUM_OF_QUESTIONS;i++)
-            {
-                questionArray[i].answer = questionAnswerSet[i + NUM_OF_QUESTIONS];
-            }
-    
-        return questionArray;
+        return qd;
         }
 
     // Gets question
     //
-    public static String getQuestion (QuestionData[] qd, int n)
+    public static String getQuestion (QuestionData qd)
         {
-        return qd[n].question;
+        return qd.question;
         }
 
     // Gets answer
     //
-    public static String getAnswer (QuestionData[] qd, int n)
+    public static String getAnswer (QuestionData qd)
         {
-        return qd[n].answer;
+        return qd.answer;
         }
 
     // Gets user_input
     //
-    public static String getUserInput (QuestionData[] qd, int n)
+    public static String getUserInput (QuestionData qd)
         {
-        return qd[n].user_input;
+        return qd.user_input;
         }
 
     // Gets answer_status (true/false)
     //
-    public static boolean getAnswerStatus (QuestionData[] qd, int n)
+    public static boolean getAnswerStatus (QuestionData qd)
         {
-        return qd[n].answer_status;
+        return qd.answer_status;
+        }
+
+    // Sets value to user_input
+    // without returning it
+    public static QuestionData setUserInput (QuestionData qd, String input)
+        {
+        qd.user_input = input;
+        return qd;
+        }
+
+    // Checks whether answer of user is correct
+    // sets answer status
+    public static void determineAnswerStatus (QuestionData qd)
+        {
+        
+        if (getUserInput(qd).equals(getAnswer(qd)))
+        {
+            qd.answer_status = true;
+        }
+        else
+        {
+            qd.answer_status = false;
+        }
+        return;
+        }
+
+/*******************************************************************
+                    *_ADT menu_*  (above)
+
+createQuestionData - creates new QuestionData
+
+getQuestion - gets corresponding quesiton
+
+getAnswer - gets corresponding answer
+
+getUserInput - gets corresponding user_input
+
+getAnswerStatus - gets corresponding answer_status
+
+setUserInput - sets new value for user_input
+
+determineAnswerStatus - calculates if answer_status is true/false
+
+*******************************************************************/
+
+    // Creates a QuestionData array and recieves the selected question set
+    // Stores all questions and answers
+    public static QuestionData[] createQuestionDataArray (String[] QandASet) throws IOException
+        {
+        final int NUM_OF_QUESTIONS = QandASet.length / 2;   // file contains question and answer
+        QuestionData questionDataArray[] = new QuestionData[NUM_OF_QUESTIONS];
+
+    
+        for (int i=0;i<NUM_OF_QUESTIONS;i++)
+            {
+                questionDataArray[i] = createQuestionData(QandASet,i,NUM_OF_QUESTIONS);
+            }
+    
+        return questionDataArray;
         }
 
     // Gets the total number of questions
@@ -93,40 +134,16 @@ class quiz_game
         return qd.length;
         }
 
-    // Sets value to user_input
-    // without returning it
-    public static void setUserInput (QuestionData[] qd, int n, String input)
-        {
-        qd[n].user_input = input;
-        return;
-        }
-
-    // Checks whether answer of user is correct
-    // sets answer status
-    public static void determineAnswerStatus (QuestionData[] qArray, int count)
-        {
-        
-        if (getUserInput(qArray,count).equals(getAnswer(qArray,count)))
-        {
-            qArray[count].answer_status = true;
-        }
-        else
-        {
-            qArray[count].answer_status = false;
-        }
-        return;
-        }
-
     // Counts correct answers
     // Returns mark, number of correct answers
     public static int performanceMarkCalc (QuestionData[] qArray)
         {
-        int NUM_OF_QUESTIONS = qArray.length;
+        int NUM_OF_QUESTIONS = getNumQuestions(qArray);
         int performance_points = 0;
 
         for (int i=0;i<NUM_OF_QUESTIONS;i++)
             {
-                if (qArray[i].answer_status)
+                if (getAnswerStatus(qArray[i]))
                     {
                         performance_points = performance_points + 1;
                     }
@@ -138,7 +155,7 @@ class quiz_game
     //
     public static int performancePercentageCalc (QuestionData[] qArray, int perf_points)
         {
-        final double NUM_OF_QUESTIONS = qArray.length;
+        final double NUM_OF_QUESTIONS = getNumQuestions(qArray);
         
         double outOf100 = ( (double)perf_points / NUM_OF_QUESTIONS ) * 100.0;
         
@@ -179,7 +196,7 @@ class quiz_game
 
         while (! (input.equals("CREATE") || input.equals("PLAY")) )
             {
-                input = inputString("$ Please type 'CREATE' or 'PLAY'");
+                input = inputString("$ Please type 'CREATE' or 'PLAY' (in CAPITALS)");
             }
 
         return input;
@@ -314,11 +331,11 @@ class quiz_game
         boolean retake = false; // Initialising
         String Y_or_N;
         
-        print("$ You answered: " + getUserInput(qArray,COUNT) + "..");
+        print("$ You answered: " + getUserInput(qArray[COUNT]) + "..");
         print("");
         System.out.print("$ Your answer is: ");
         
-        if (getAnswerStatus(qArray,COUNT)) // meaning answer is correct
+        if (getAnswerStatus(qArray[COUNT])) // meaning answer is correct
         {
             print("RIGHT");
         }
@@ -329,8 +346,8 @@ class quiz_game
         
         print("$$ Your new balance is.. " + readeable_balance);
     
-        if ( (!getAnswerStatus(qArray,COUNT))
-            && (!getAnswer(qArray,COUNT).equals("YES")) && (!getAnswer(qArray,COUNT).equals("NO"))) // Retake or answer show
+        if ((!getAnswerStatus(qArray[COUNT]))
+            && (!getAnswer(qArray[COUNT]).equals("YES")) && (!getAnswer(qArray[COUNT]).equals("NO"))) // Retake or answer show
         {
             print("");
             Y_or_N = inputString("$ Would you like to try again? (Y/N)");
@@ -343,7 +360,7 @@ class quiz_game
                 {
                     retake = false;
                             
-                    print("$ The correct answer was " + getAnswer(qArray,COUNT));
+                    print("$ The correct answer was " + getAnswer(qArray[COUNT]));
                 }
             while (!Y_or_N.equals("Y") && !Y_or_N.equals("N"))
                 {
@@ -357,16 +374,16 @@ class quiz_game
                     {
                         retake = false;
                             
-                        print("$ The correct answer was " + getAnswer(qArray,COUNT));
+                        print("$ The correct answer was " + getAnswer(qArray[COUNT]));
                     }
                 }
         }
 
-        if (!getAnswerStatus(qArray,COUNT) &&
-                    ((getAnswer(qArray,COUNT).equals("YES")) || (getAnswer(qArray,COUNT).equals("NO"))) ) // No retake if yes/no question
+        if (!getAnswerStatus(qArray[COUNT]) &&
+                    ((getAnswer(qArray[COUNT]).equals("YES")) || (getAnswer(qArray[COUNT]).equals("NO"))) ) // No retake if yes/no question
         {
             print("");
-            print("$ The correct answer was " + getAnswer(qArray,COUNT));
+            print("$ The correct answer was " + getAnswer(qArray[COUNT]));
         }
         
         print("");
@@ -405,25 +422,25 @@ class quiz_game
             {
                 print("$$ QUESTION " + (qCOUNT + 1) + " $$");
                 
-                input = inputString("$ " + getQuestion(questionArray,qCOUNT));
+                input = inputString("$ " + getQuestion(questionArray[qCOUNT]));
 
                 while ( ! (input.equals("YES") || input.equals("NO"))
-                      && ( getAnswer(questionArray,qCOUNT).equals("YES") || getAnswer(questionArray,qCOUNT).equals("NO") ) )
+                      && ( getAnswer(questionArray[qCOUNT]).equals("YES") || getAnswer(questionArray[qCOUNT]).equals("NO") ) )
                 {
                     print("Please type YES or NO.");
                     print("");
-                    input = inputString("$ " + getQuestion(questionArray,qCOUNT));
+                    input = inputString("$ " + getQuestion(questionArray[qCOUNT]));
                 }
                 
-                setUserInput(questionArray,qCOUNT,input);
+                setUserInput(questionArray[qCOUNT],input);
                 
-                determineAnswerStatus(questionArray,qCOUNT);
+                determineAnswerStatus(questionArray[qCOUNT]);
     
-                balance = balanceFind(getAnswerStatus(questionArray,qCOUNT), balance);
+                balance = balanceFind(getAnswerStatus(questionArray[qCOUNT]), balance);
     
                 retake = resultDisplay(qCOUNT, balance, questionArray);
     
-                qCOUNT = ifRetake(qCOUNT, retake); // Subtracts one from the count if user retakes quesiton
+                qCOUNT = ifRetake(qCOUNT, retake);
             }
         return balance;
         }
@@ -605,7 +622,7 @@ class quiz_game
     //
     public static void play () throws IOException
         {
-        QuestionData[] questionArray = createQuestionData(qSetAsk());
+        QuestionData[] questionArray = createQuestionDataArray(qSetAsk());
         String user_name;
         String end_balance;
         int performance_points = 0; // Initialise
@@ -628,27 +645,25 @@ class quiz_game
         }
 
     // Method that asks user to write in questions and answers
-    // Maximum of 10 questions is assumed
+    // One to ten questions is allowed
     public static String[] created_questionFill ()
         {
         String[] inputArray;
-        int inputNum;
-        final int NUM_QUESTIONS;
+        int num_questions;
 
-        inputNum = Integer.parseInt(inputString("$ How many QUESTIONS? (up to 10)"));
-        NUM_QUESTIONS = inputNum;
+        num_questions = Integer.parseInt(inputString("$ How many QUESTIONS? (up to 10)"));
 
-        while (inputNum <= 0 | inputNum > 10)
+        while (num_questions <= 0 | num_questions > 10)
             {
-                inputNum = Integer.parseInt(inputString("Please type in a value from 1 to 10."));
+                num_questions = Integer.parseInt(inputString("Please type in a value from 1 to 10."));
             }
 
-        inputArray = new String[ NUM_QUESTIONS*2 ];
+        inputArray = new String[ num_questions*2 ];
 
-        for (int i=0;i<NUM_QUESTIONS;i++)
+        for (int i=0;i<num_questions;i++)
             {
                 inputArray[i] = inputString("$ Type in QUESTION " + (i + 1) );
-                inputArray[ i + NUM_QUESTIONS ] = inputString("$ Type in ANSWER " + (i + 1) + " (in CAPITALS)");
+                inputArray[ i + num_questions ] = inputString("$ Type in ANSWER " + (i + 1) + " (in CAPITALS)");
             }
 
         return inputArray;
